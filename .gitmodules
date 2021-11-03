@@ -1,3 +1,0 @@
-[submodule "libs"]
-	path = libs
-	url = https://github.com/hguomin/code-starter-web-frontend-webpack.git
