@@ -29,17 +29,24 @@ public class WebSocketMessageChannelBinder extends AbstractMessageChannelBinder<
 
     //@Override
     protected MessageHandler createProducerMessageHandler(ProducerDestination destination, ProducerProperties producerProperties, MessageChannel errorChannel) throws Exception {
-        return new OutboundMessageHandler();
+        OutboundMessageHandler handler = new OutboundMessageHandler(getWebSocketOperation());
+        handler.setBeanFactory(getBeanFactory());
+        return handler;
     }
 
     //@Override
     protected MessageProducer createConsumerEndpoint(ConsumerDestination destination, String group, ConsumerProperties properties) throws Exception {
+        
+        return new InboundMessageProducer(getWebSocketOperation());
+    }
+
+    private WebSocketOperation getWebSocketOperation() {
         AbstractApplicationContext appCtx = this.getApplicationContext();
         WebSocketOperation operation = null;
         if (appCtx.containsBean("webSocketHandlerMapping")) {
             HandlerMapping handlerMapping = (HandlerMapping)appCtx.getBean("webSocketHandlerMapping");
             operation = (WebSocketOperation)appCtx.getBean("webSocketOperation");
         }
-        return new InboundMessageProducer(operation);
+        return operation;
     }
 }
